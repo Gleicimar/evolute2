@@ -41,7 +41,7 @@ a.logo{
   height: 145px;
 }
 #menu_mov{
-  /* display: none; */
+  display: none;
   font-size: 3rem;
   color: white;
   cursor: pointer;
