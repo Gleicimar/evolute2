@@ -1,0 +1,16 @@
+# Ativa o mod_rewrite
+RewriteEngine On
+
+# Permite URLs amigáveis
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.html [L]
+
+# Bloquear acesso a arquivos sensíveis
+<FilesMatch "\.(htaccess|htpasswd|ini|phps|fla|psd|log|sh)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Definir página de erro personalizada (opcional)
+ErrorDocument 404 /index.html

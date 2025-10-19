@@ -18,7 +18,7 @@
         <li><a href="">Serviços</a></li>
         <li><a href="">Portfolio</a></li>
         <li><a href="">Sobre </a></li>
-        <li><a href="">Contato</a></li>
+        <li><a href="/contato">Contato</a></li>
       </ul>
     </div>
   </header>
@@ -43,8 +43,9 @@
      <div class="service_grid">
         <div class="box_serv">
           <div class="serv_icon">💻</div>
+                    <h3>Desenvolvimento Web</h3>
+
           <p>
-          <h3>Desenvolvimento Web</h3>
               Criamos aplicações web modernas e responsivas usando as tecnologias mais atuais do mercado.
           </p>
         </div>
@@ -123,10 +124,10 @@
   <div class="center">
     <h2>Fale Conosco</h2>
     <p>Pronto para transformar sua ideia em realidade? Entre em contato conosco hoje mesmo!</p>
-    <form class="form_contato">
+    <form class="form_contato" id="contactForm">
       <input type="text" name="nome" placeholder="Seu Nome" required>
       <input type="email" name="email" placeholder="Seu Email" required>
-      <textarea placeholder="Sua Mensagem" required></textarea>
+      <textarea placeholder="Sua Mensagem" name="mensagem" required></textarea>
       <input type="submit" class="button primary"name="acao" value="Enviar Mensagem">
     </form>
   </div>
