@@ -1,0 +1,295 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+ul,li, a{
+  text-decoration: none;
+  list-style-type: none;
+}
+body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e0e6ed;
+            overflow-x: hidden;
+        }
+.center{
+  display: flex;
+  width: 100%;
+  max-width: 1280px;
+  padding: 0 2%;
+  flex-wrap: wrap;
+}
+
+ header{
+  background-color: rgba(10, 14, 39, 0.9);
+  height: 140px
+  place-content: center;
+ }
+
+ header >.center{
+  justify-content: space-between;
+  align-items: center;
+ }
+a.logo{
+  background-image: url(../assets/logotipos/LogoEvoluteCode.svg);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-clip: content-box;
+
+  width: 250px;
+  height: 145px;
+}
+ .menu{
+  display: flex;
+  gap:21px;
+ }
+
+ .menu a{
+  display: flex;
+  font-size: 2.2rem;
+  color: white;
+  cursor: pointer;
+  padding: 0.3rem;
+  transition: all ease-in-out 0.3s;
+ }
+
+ .menu a:hover{
+  border-bottom: antiquewhite 2px solid;
+  color:rgba(216, 220, 241, 0.9) ;
+    transition: all ease-in-out 0.3s;
+
+ }
+/********Banner*********************/
+ .banner{
+  background:linear-gradient(135deg, #5b5bb9 0%, #000080 100%);;
+  min-height: 80vh;
+  place-items: center;
+  place-content: center;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.8s ease forwards;
+  animation-delay: 0.2s;
+ }
+ @keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+ .banner h2{
+  display: flex;
+  width: 100%;
+  color:White;
+  font-size: 4rem;
+  margin:2rem 0;
+   animation: fadeInUp 1s ease-out;
+ }
+
+ .banner p{
+  font-size: 2.2rem;
+  margin-bottom: 2rem;
+  color:#0e0e30
+ }
+
+ .buttons{
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  animation: fadeInUp 1s ease-out 0.4s backwards;
+ }
+ .button.primary, .button.secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(122, 187, 240, 0.815);
+     transform: scale(1.05);
+  box-shadow: 0 0 20px #00ffcc;
+  transition: 0.3s;
+}
+ input[type="submit"]{
+  margin:2rem;
+  height: 4.2rem;
+  font-size: 33px;
+  cursor: pointer;
+  width: 18rem;
+  color: white;
+  border: none;
+ display: block;
+ border-bottom: 4px solid  darkgreen;
+ box-shadow: 7px 8px 9px rgb(235, 234, 234);
+  border-radius: 10px;
+  line-height: 4rem;
+  background-color: aquamarine;
+  text-align: center;
+  transition: all ease-in-out 0.3s;
+ }
+
+ .button:hover{
+background-color: rgba(127, 255, 212, 0.336);
+transform: translateY(-3px);
+    transition: all 0.3s; }
+ .button.secondary{
+  background-color: transparent;
+  border: 1px solid;
+  border-bottom: 2px solid white ;
+ }
+
+  .button.secondary:hover{
+  background-color: aquamarine;
+ }
+ .servicos {
+    padding: 100px 5%;
+            background: rgba(20, 25, 50, 0.5); }
+.service_grid{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 2fr));
+            gap: 40px;
+           max-width: 1200px;
+            margin: 0 auto;
+}
+.servicos h2{
+  display: flex;
+  place-content: center;
+  margin-bottom: 20px;
+  font-size: 2.7rem;
+  width: 100%;
+}
+ .box_serv{
+   background: rgba(26, 31, 58, 0.8);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 247, 255, 0.1);
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+            width: 35rem;
+ }
+.box_serv:hover{
+  box-shadow:white 2px 5px 8px ;
+}
+ .box_serv p{
+  font-size: 23px;
+  justify-content: center;
+ }
+.serv_icon{
+  font-size: 6rem;
+  padding: 10px;
+}
+
+section.sobre{
+  display: flex;
+  width:100%;
+  background: linear-gradient(135deg, #5b5bb9 0%, #000080 100%);
+  margin-top: 50px;
+  padding-bottom: 50px;
+  place-content: center;
+}
+.sobre h2{
+  display: flex;
+  width: 100%;
+  place-content: center;
+  font-size: 3rem;
+  margin: 20px 0;
+}
+.sobre p{
+  font-size: 27px;
+  width: 50%;
+}
+.sobre svg{
+  max-width: 600px;
+}
+.tecs{
+  display: flex;
+  width: 100%;
+}
+.tecs h3{
+  display: flex;
+  width: 100%;
+  font-size: 21px;
+  margin: 20px;
+}
+.tec_lang{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  background-color: #5b5bb9;
+  border: 1px solid #000080;
+  margin:10px;
+  text-align:center;
+  height:40px;
+  border-radius:20px
+}
+
+.contato h2{
+  display: flex;
+  width: 100%;
+  place-content: center;
+  font-size: 3rem;
+  margin: 20px 0;
+}
+.contato p{
+  font-size: 22px;
+  width: 100%;
+  place-content: center;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+form{
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  margin: 0 auto;
+}
+input, textarea{
+  margin:10px 0;
+  padding:10px;
+  font-size:18px;
+  border-radius:10px;
+  border:1px solid #ccc;
+}
+
+input[type="submit"]{
+  background-color: #5b5bb9;
+  color:white;
+  line-height: 40px;
+  border:none;
+  cursor:pointer;
+}
+
+footer{
+  background-color: rgba(10, 14, 39, 0.9);
+  padding: 20px 0;
+  margin-top: 50px;
+  color: #e0e6ed;
+  text-align: center;
+}
+.footer .center p{
+  font-size: 19px;
+}
+
+
+/* Media Queries */
+ @media (max-width: 768px) {
+  .banner h2{
+    font-size: 36px
+  }
+  .banner p{
+    font-size: 1.8rem;
+  }
+  .buttons{
+    flex-direction: column;
+    gap: 15px
+  }
+  .button{
+    width: 100%;
+    margin: 10px 0;
+  }
+  .sobre p{
+    width: 90%;
+    font-size: 20px;
+  }
+  form{
+    width: 90%;
+  }
+}
