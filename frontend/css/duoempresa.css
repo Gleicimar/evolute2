@@ -40,6 +40,14 @@ a.logo{
   width: 250px;
   height: 145px;
 }
+#menu_mov{
+  /* display: none; */
+  font-size: 3rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+
+ }
  .menu{
   display: flex;
   gap:21px;
@@ -271,6 +279,31 @@ footer{
 
 /* Media Queries */
  @media (max-width: 768px) {
+  .menu{
+    display: none;
+  }
+  #menu_mov{
+    display: block;
+  }
+  .menu.active{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-color: rgba(10, 14, 39, 0.9);
+    position: absolute;
+    top: 120px;
+    left: 0;
+    place-items: center;
+    padding: 20px 0;
+    z-index: 1000;
+    transition: all 0.3s ease-in-out;
+  }
+
+  a.logo{
+    width: 200px;
+    height: 120px;
+  }
+
   .banner h2{
     font-size: 36px
   }
@@ -284,6 +317,9 @@ footer{
   .button{
     width: 100%;
     margin: 10px 0;
+  }
+  .box_serv{
+    width: 100%;
   }
   .sobre p{
     width: 90%;
