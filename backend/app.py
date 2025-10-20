@@ -9,7 +9,7 @@ brt = timezone(timedelta(hours=-3))
 app = Flask(__name__)
 
 app.config.from_object(Config)
-app.config['MONGO_URI'] = 'mongodb://localhost:27017/evolute2'  # <- ajuste o nome do seu banco
+# app.config['MONGO_URI'] = 'mongodb://localhost:27017/evolute2'  # <- ajuste o nome do seu banco
 
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
@@ -60,7 +60,7 @@ def manage_leads():
 def listar():
     if request.method == 'POST':
         data = request.get_json()
-        
+
     return jsonify({'message': 'Rota de listagem ativa!'}), 200
 
 
