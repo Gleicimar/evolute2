@@ -10,13 +10,13 @@ MenuMobile.addEventListener('click', () => {
  });
 
 
-/**********chamada da Api */https://evolute2-7tt1.vercel.app/
+/**********chamada da Api */
 const API_URL = 'https://evolute2-7tt1.vercel.app/';
-// const API_URL = 'http://127.0.0.1/projetos/Duoempresa/frontend/'; //Subtituir pela url do vercel ou heroku quando for fazer o deploy
+//  const API_URL = 'http://127.0.0.1:5000'; //Subtituir pela url do vercel ou heroku quando for fazer o deploy
 
 //enviar formulário
 
-//selicionar o formulário
+//selecionar o formulário
 const form = document.getElementById('contactForm');
 
 //escutar evento de envio do formulário
@@ -25,9 +25,9 @@ form.addEventListener('submit', async(e)=> {
   e.preventDefault(); //impedir o comportamento padrão de recarregar a página
 
   //Pegar os dados do formulário
-  const nome = form.nome.value;
-  const email = form.email.value;
-  const mensagem = form.mensagem.value;
+  const nome = form.nome.value.trim();
+  const email = form.email.value.trim();
+  const mensagem = form.mensagem.value.trim();
 
   //Botao de enivo mostrar que está enviando
   const botaoEnviar = form.querySelector('input[type="submit"]');
@@ -36,13 +36,23 @@ form.addEventListener('submit', async(e)=> {
 
   //Enviar os dados para a API
   try {
+    if (!nome || !email || !mensagem) {
+      alert('Por favor, preencha todos os campos.');
+      botaoEnviar.disabled = false;
+      botaoEnviar.value = 'Enviar Mensagem';
+      return;
+}
     //enviar os dados  do formulário para a API
-    const  response = await fetch(`${API_URL}/contato.html`, {
+    const  response = await fetch(`${API_URL}/api/leads`, {
       method: 'POST',
       headers: {
         'Content-type': 'application/json',
       },
-      body: JSON.stringify({ nome, email, mensagem }),
+      body: JSON.stringify({
+        nome: nome,
+        email: email,
+        mensagem: mensagem
+      }),
     })
     if(response.ok) {
       alert('Mensagem enviada com sucesso!');

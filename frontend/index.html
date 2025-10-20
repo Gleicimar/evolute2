@@ -27,8 +27,8 @@
       <h2>Transformamos Ideias em Código</h2>
       <p>Criamos soluções digitais personalizadas para levar seu negócio ao próximo nível</p>
       <div class="buttons">
-      <input type="submit" class="button  primary" value="Começar Projeto">
-      <input type="submit" class="button secondary" value="Nossos serviços">
+      <a href="" class="button  primary">Começar Projeto</a>
+      <a href="" class="button secondary">Nossos serviços</a>
       </div>
         <div class="particle" style="top: 20%; left: 10%;"></div>
         <div class="particle" style="top: 60%; left: 80%; animation-delay: 1s;"></div>
@@ -124,11 +124,16 @@
   <div class="center">
     <h2>Fale Conosco</h2>
     <p>Pronto para transformar sua ideia em realidade? Entre em contato conosco hoje mesmo!</p>
-    <form class="form_contato" id="contactForm">
+    <form class="form_contato" id="contactForm" method="post">
       <input type="text" name="nome" placeholder="Seu Nome" required>
       <input type="email" name="email" placeholder="Seu Email" required>
       <textarea placeholder="Sua Mensagem" name="mensagem" required></textarea>
-      <input type="submit" class="button primary"name="acao" value="Enviar Mensagem">
+      <input type="submit" class="button primary"name="enviar" value="Enviar Mensagem">
+
+      <div class="form_response">
+        <p> Você receberá uma resposta em breve!</p>
+      </div>
+
     </form>
   </div>
 </section>
