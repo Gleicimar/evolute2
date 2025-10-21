@@ -11,7 +11,7 @@ MenuMobile.addEventListener('click', () => {
 
 
 /**********chamada da Api */
-const API_URL = 'https://evolute2-7tt1.vercel.app/';
+const API_URL = "https://evolute2.onrender.com";
 //  const API_URL = 'http://127.0.0.1:5000'; //Subtituir pela url do vercel ou heroku quando for fazer o deploy
 
 //enviar formulário
