@@ -55,7 +55,8 @@ form.addEventListener('submit', async(e)=> {
       }),
     })
     if(response.ok) {
-      alert('Mensagem enviada com sucesso!');
+      alert('Mensagem enviada com sucesso! :)');
+
       form.reset();
     }else {
       alert('Erro ao enviar a mensagem. Tente novamente mais tarde.');
