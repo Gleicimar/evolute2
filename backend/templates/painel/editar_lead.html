@@ -1,0 +1,17 @@
+  <form class="form_contato" id="contactForm" method="post">
+      <input type="text" name="nome" placeholder="Seu Nome" value="{{lead.nome}}" required>
+      <input type="email" name="email" placeholder="Seu Email" value="{{lead.email}}" required>
+      <textarea placeholder="Sua Mensagem" name="mensagem" required>{{lead.mensagem}}</textarea>
+      <select name="status" id="">
+        <option value="pendente" {% if lead.status == 'pendente' %}selected{% endif %}>Pendente</option>
+        <option value="contatado" {% if lead.status == 'contatado' %}selected{% endif %}>Contatado</option>
+        <option value="convertido" {% if lead.status == 'convertido' %}selected{% endif %}>Convertido</option>
+      </select>
+
+      <input type="submit" class="button primary"name="atualizar" value="atualizar ">
+
+      <div class="form_response">
+        <p> Você receberá uma resposta em breve!</p>
+      </div>
+
+    </form>
