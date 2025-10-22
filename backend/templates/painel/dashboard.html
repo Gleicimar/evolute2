@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{url_for('static', filename='css/painel.css')}}">
+  <script defer src="{{url_for('static', filename='js/function.js')}}"></script>
+  <title>Document</title>
+</head>
+<body>
+  <section class="painel">
+    <div class="center">
+    <h1>🚀 Dashboard EvoluteCode</h1>
+      <div class="user-info">
+        <span>Olá, <strong>{{ usuario }}</strong>!</span>
+        <a href="{{ url_for('logout') }}" class="btn-logout">Sair</a>
+      </div>
+
+    <div class="stats">
+      <div class="stat-card">
+        <h3>📧 Total de Leads</h3>
+        <p class="stat-number">{{ leads|length }}</p>
+      </div>
+       <div class="stat-card">
+        <h3>📒 Leads Pendentes</h3>
+        <p class="stat-number">{{ leads|selectattr('status', 'equalto', 'pendente')|list|length }}</p>
+      </div>
+    </div>
+
+
+  <table>
+    <tr>
+      <th>Nome</th>
+      <th>Email</th>
+      <th>Mensagem</th>
+      <th>Data</th>
+      <th>Status</th>
+      <th>Açoes</th>
+    </tr>
+    {% for lead in leads %}
+    <tr>
+      <td>{{ lead['nome'] }}</td>
+      <td>{{ lead['email'] }}</td>
+      <td>{{ lead['mensagem'] }}</td>
+      <td>{{ lead['data'] }}</td>
+      <td>{{ lead['status'] }}</td>
+      <td>
+        <a href="{{ url_for('editar_lead', lead_id=lead['_id']) }}">Atualizar</a>
+        <a href="#" class="delete-link" data-lead-id="{{ lead._id }}">
+            Deletar {{ lead.nome }}
+        </a>
+      </td>
+ </tr>
+    {% endfor %}
+  </table>
+
+    </div>
+  </section>
+
+
+</body>
+</html>

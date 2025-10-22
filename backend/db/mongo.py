@@ -13,6 +13,7 @@ conexao = MongoClient(MONGO_URI)
 db = conexao['evolute2']
 
 collect_leads = db['leads']
+usuarios = db['usuarios']
 
 
 fs = GridFS(db)
