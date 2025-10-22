@@ -8,7 +8,7 @@ document.querySelectorAll('.delete-link').forEach(link => {
 
         fetch(`/dashboard/deletar_lead/${leadId}`, { method: 'POST' })
         .then(response => {
-            if (response.ok) {
+            if (response.ok) {// 🔹 verifica se a resposta foi bem-sucedida
                 clickedLink.remove(); // 🔹 usa a referência correta
             } else {
                 alert('Erro ao deletar lead.');
