@@ -25,7 +25,7 @@ def serve_index():
 # ROTAS API
 # ========================================
 
-@app.route('/', methods=['GET'])
+@app.route('/api', methods=['GET'])
 def home():
     return jsonify({
         'message': 'API EvoluteCode funcionando!',
