@@ -8,7 +8,7 @@ import secrets
 # Fuso horário de Brasília (UTC-3)
 brt = timezone(timedelta(hours=-3))
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='frontend', static_url_path='')
 
 # ✅ Configurações
 app.config.from_object(Config)
