@@ -17,7 +17,8 @@ app.secret_key = secrets.token_hex(16)  # ✅ Necessário para sessions
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 # --- ROTA PARA FRONTEND ---
-@app.route('/')
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
 def serve_index():
     return send_from_directory(app.static_folder, 'index.html')
 
