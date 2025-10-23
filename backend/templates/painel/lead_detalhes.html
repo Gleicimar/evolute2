@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/painel.css') }}">
+  <title>Lead: {{ lead.nome }}</title>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <h1>📋 Detalhes do Lead</h1>
+      <div class="user-info">
+        <a href="{{ url_for('painel') }}" class="btn-back">← Voltar</a>
+        <p> <strong>{{ usuario }}</strong></p>
+        <a href="{{ url_for('logout') }}" class="btn-logout">Sair</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="lead-details">
+      <!-- Informações Básicas -->
+      <div class="card">
+        <h2>ℹ️ Informações Básicas</h2>
+        <p><strong>Nome:</strong> {{ lead.nome }}</p>
+        <p><strong>Email:</strong> <a href="mailto:{{ lead.email }}">{{ lead.email }}</a></p>
+        <p><strong>Telefone:</strong> {{ lead.telefone|default('Não informado') }}</p>
+        <p><strong>Mensagem:</strong> {{ lead.mensagem|default('Sem mensagem') }}</p>
+        <p><strong>Origem:</strong> {{ lead.origem|default('site')|capitalize }}</p>
+      </div>
+
+      <!-- Follow-up -->
+      <div class="card">
+        <h2>📊 Follow-up</h2>
+
+        <form action="{{ url_for('atualizar_lead_followup', lead_id=lead._id) }}" method="POST">
+          <div class="form-group">
+            <label>Status:</label>
+            <select name="status">
+              <option value="novo" {% if lead.status == 'novo' %}selected{% endif %}>🆕 Novo</option>
+              <option value="contatado" {% if lead.status == 'contatado' %}selected{% endif %}>📞 Contatado</option>
+              <option value="proposta" {% if lead.status == 'proposta' %}selected{% endif %}>📄 Proposta Enviada</option>
+              <option value="negociacao" {% if lead.status == 'negociacao' %}selected{% endif %}>💬 Em Negociação</option>
+              <option value="fechado" {% if lead.status == 'fechado' %}selected{% endif %}>✅ Fechado</option>
+              <option value="perdido" {% if lead.status == 'perdido' %}selected{% endif %}>❌ Perdido</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Prioridade:</label>
+            <select name="prioridade">
+              <option value="baixa" {% if lead.prioridade == 'baixa' %}selected{% endif %}>🟢 Baixa</option>
+              <option value="media" {% if lead.prioridade == 'media' %}selected{% endif %}>🟡 Média</option>
+              <option value="alta" {% if lead.prioridade == 'alta' %}selected{% endif %}>🔴 Alta</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Valor Estimado (R$):</label>
+            <input type="number" name="valor_estimado" step="0.01" value="{{ lead.valor_estimado|default(0) }}">
+          </div>
+
+          <div class="form-group">
+            <label>Próximo Contato:</label>
+            <input type="date" name="data_proximo_contato" value="{{ lead.data_proximo_contato }}">
+          </div>
+
+          <button type="submit" class="btn-primary">💾 Salvar Alterações</button>
+        </form>
+      </div>
+
+      <!-- Datas -->
+      <div class="card">
+        <h2>📅 Datas</h2>
+        <p><strong>Criado em:</strong> {{ lead.data_criacao|default(lead.data) }}</p>
+        <p><strong>Última interação:</strong> {{ lead.data_ultima_interacao|default('N/A') }}</p>
+        <p><strong>Próximo contato:</strong> {{ lead.data_proximo_contato|default('Não agendado') }}</p>
+      </div>
+
+      <!-- Histórico -->
+      <div class="card">
+        <h2>📝 Histórico e Anotações</h2>
+
+        {% if lead.anotacoes %}
+        <div class="anotacoes-lista">
+          {% for anotacao in lead.anotacoes %}
+          <div class="anotacao-item">
+            <p><strong>{{ anotacao.usuario }}</strong> - {{ anotacao.data }}</p>
+            <p>{{ anotacao.texto }}</p>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p>Nenhuma anotação ainda.</p>
+        {% endif %}
+
+        <form action="{{ url_for('adicionar_anotacao_lead', lead_id=lead._id) }}" method="POST" style="margin-top: 20px;">
+          <textarea name="anotacao" placeholder="Adicionar nova anotação..." rows="4" required></textarea>
+          <button type="submit" class="btn-primary">➕ Adicionar Anotação</button>
+        </form>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

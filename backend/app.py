@@ -8,6 +8,30 @@ import secrets
 
 # Fuso horário de Brasília (UTC-3)
 brt = timezone(timedelta(hours=-3))
+# ========================================
+# HELPER FUNCTIONS (ADICIONAR AQUI)
+# ========================================
+
+def formatar_data_br():
+    """Retorna data/hora atual formatada"""
+    return datetime.now(brt).strftime('%d/%m/%Y %H:%M:%S')
+
+def adicionar_anotacao(lead_id, texto, usuario):
+    """Adiciona uma anotação ao histórico do lead"""
+    anotacao = {
+        'texto': texto,
+        'data': formatar_data_br(),
+        'usuario': usuario
+    }
+
+    collect_leads.update_one(
+        {'_id': ObjectId(lead_id)},
+        {
+            '$push': {'anotacoes': anotacao},
+            '$set': {'data_ultima_interacao': formatar_data_br()}
+        }
+    )
+
 
 app = Flask(__name__)
 
@@ -46,51 +70,65 @@ def manage_leads():
                     'success': False,
                     'error': 'Nome e email são obrigatórios'
                 }), 400
-
+            # ✅ LEAD COM FOLLOW-UP (ATUALIZADO)
             lead = {
                 'nome': nome,
                 'email': email,
+                'telefone': data.get('telefone', ''),
                 'mensagem': mensagem or '',
-                'data': datetime.now(brt).strftime('%d/%m/%Y %H:%M:%S'),
-                'status': 'novo'
-            }
 
+                # ✅ FOLLOW-UP (NOVO)
+                'status': 'novo',
+                'prioridade': data.get('prioridade', 'média'),
+                'origem': data.get('origem', 'site'),
+                'valor_estimado': data.get('valor_estimado', 0),
+
+                # ✅ DATAS (NOVO)
+                'data': datetime.now(brt).strftime('%d/%m/%Y %H:%M:%S'),
+                'data_criacao': datetime.now(brt).strftime('%d/%m/%Y %H:%M:%S'),
+                'data_ultima_interacao': datetime.now(brt).strftime('%d/%m/%Y %H:%M:%S'),
+                'data_proximo_contato': data.get('data_proximo_contato', ''),
+
+                # ✅ HISTÓRICO (NOVO)
+                'anotacaoes': [{
+                   'texto': 'Lead criado',
+                   'data': datetime.now(brt).strftime('%d/%m/%Y %H:%M:%S'),
+                   'usuario': 'sistema'
+                                   }],
+                 # ✅ RESPONSÁVEL (NOVO)
+                 'responsavel':None
+            }
             result = collect_leads.insert_one(lead)
             lead['_id'] = str(result.inserted_id)
 
-            print(f'✅ Lead salvo: {nome} - {email}')
-
+            print(f'📥 Novo lead adicionado: {lead["_id"]} - {nome} ({email})')
             return jsonify({
                 'success': True,
-                'message': 'Lead adicionado com sucesso!',
                 'lead': lead
             }), 201
-
         except Exception as e:
-            print(f'❌ Erro: {str(e)}')
-            return jsonify({
-                'success': False,
-                'error': 'Erro ao processar requisição'
-            }), 500
-
-    elif request.method == 'GET':
-        try:
-            all_leads = list(collect_leads.find().sort('data', -1))
-            for lead in all_leads:
-                lead['_id'] = str(lead['_id'])
-
-            return jsonify({
-                'success': True,
-                'count': len(all_leads),
-                'leads': all_leads
-            }), 200
-
-        except Exception as e:
+            print(f'❌ Erro ao adicionar lead: {str(e)}')
             return jsonify({
                 'success': False,
                 'error': str(e)
             }), 500
+    elif request.method == 'GET':
+        try:
+            leads = list(collect_leads.find().sort('data', -1))
+            for lead in leads:
+                lead['_id'] = str(lead['_id'])
 
+            print(f'📊 {len(leads)} leads recuperados')
+            return jsonify({
+                'success': True,
+                'leads': leads
+            }), 200
+        except Exception as e:
+            print(f'❌ Erro ao recuperar leads: {str(e)}')
+            return jsonify({
+                'success': False,
+                'error': str(e)
+            }), 500
 # ========================================
 # ROTAS PAINEL
 # ========================================
@@ -121,34 +159,51 @@ def login():
 
 @app.route('/painel', methods=['GET', 'POST'])
 def painel():
-    """Rota do DASHBOARD (painel principal)"""
-    # Verificar se está logado
+    """Dashboard com estatísticas de follow-up"""
     if not session.get('logado'):
-        return redirect(url_for('login'))  # ← Redireciona para login
-
+        return redirect(url_for('login'))
     try:
         # Buscar todos os leads
-        all_leads = list(collect_leads.find().sort('data', -1))
+        all_leads =list(collect_leads.find().sort('data', -1))
+
+        # ✅ CALCULAR ESTATÍSTICAS (NOVO)
+        total_leads = len(all_leads)
+        novos = len([l for l in all_leads if l.get('status') == 'novo'])
+        contatados = len([l for l in all_leads if l.get('status') == 'contatado'])
+        em_proposta = len([l for l in all_leads if l.get('status') == 'proposta'])
+        fechados = len([l for l in all_leads if l.get('status') == 'fechado'])
+        perdidos = len([l for l in all_leads if l.get('status') == 'perdido'])
+
+        #Valor total estimado
+        valor_total =sum([l.get('valor_estimado', 0) for l in all_leads if l.get('status') != 'perdidos'])
+
         for lead in all_leads:
-            lead['_id'] = str(lead['_id'])
+             lead['_id'] = str(lead['_id'])
 
-        print(f'📊 Dashboard carregado com {len(all_leads)} leads')
-
-        return render_template('painel/painel.html',
-                               leads=all_leads,
-                               usuario=session.get('usuario'))
+             return render_template('painel/painel.html',
+                                    leads=all_leads,
+                                    usuario=session.get('usuario'),
+                                    stats={
+                                        'total_leads': total_leads,
+                                        'novos': novos,
+                                        'contatados': contatados,
+                                        'em_proposta': em_proposta,
+                                        'fechados': fechados,
+                                        'perdidos': perdidos,
+                                        'valor_total': valor_total
+                                    })
     except Exception as e:
         print(f'❌ Erro ao carregar painel: {str(e)}')
         return f"Erro ao carregar painel: {str(e)}", 500
 
+
 @app.route('/painel/editar_lead/<lead_id>', methods=['GET', 'POST'])
 def editar_lead(lead_id):
-    """Editar um lead"""
+    """Editar lead (mantém compatibilidade)"""
     if not session.get('logado'):
         return redirect(url_for('login'))
 
     if request.method == 'GET':
-        # Buscar lead pelo ID
         lead = collect_leads.find_one({'_id': ObjectId(lead_id)})
         if not lead:
             return "Lead não encontrado", 404
@@ -157,17 +212,20 @@ def editar_lead(lead_id):
         return render_template('painel/editar_lead.html', lead=lead)
 
     elif request.method == 'POST':
-        # Atualizar lead
+        # Atualizar dados básicos + follow-up
         nome = request.form.get('nome')
         email = request.form.get('email')
         mensagem = request.form.get('mensagem')
-        status = request.form.get('status')
+        status = request.form.get('status', 'novo')  # ✅ NOVO
+        prioridade = request.form.get('prioridade', 'media')  # ✅ NOVO
 
         update_data = {
             'nome': nome,
             'email': email,
             'mensagem': mensagem,
-            'status': status
+            'status': status,  # ✅ NOVO
+            'prioridade': prioridade,  # ✅ NOVO
+            'data_ultima_interacao': datetime.now(brt).strftime('%d/%m/%Y %H:%M:%S')  # ✅ NOVO
         }
 
         collect_leads.update_one(
@@ -175,9 +233,95 @@ def editar_lead(lead_id):
             {'$set': update_data}
         )
 
+        # ✅ ADICIONAR ANOTAÇÃO (NOVO)
+        adicionar_anotacao(
+            lead_id,
+            f'Lead editado por {session.get("usuario")}',
+            session.get('usuario')
+        )
+
         print(f'✅ Lead {lead_id} atualizado')
         return redirect(url_for('painel'))
+# ✅ NOVAS ROTAS DE FOLLOW-UP (ADICIONAR)
 
+@app.route('/painel/lead/<lead_id>')
+def visualizar_lead(lead_id):
+    """Ver detalhes completos do lead"""
+    if not session.get('logado'):
+        return redirect(url_for('login'))
+
+    try:
+        lead = collect_leads.find_one({'_id': ObjectId(lead_id)})
+        if not lead:
+            return "Lead não encontrado", 404
+
+        lead['_id'] = str(lead['_id'])
+
+        return render_template('painel/lead_detalhes.html',
+                               lead=lead,
+                               usuario=session.get('usuario'))
+    except Exception as e:
+        return f"Erro: {str(e)}", 500
+
+@app.route('/painel/lead/<lead_id>/atualizar', methods=['POST'])
+def atualizar_lead_followup(lead_id):
+    """Atualizar status e informações de follow-up"""
+    if not session.get('logado'):
+        return redirect(url_for('login'))
+
+    try:
+        status = request.form.get('status')
+        prioridade = request.form.get('prioridade')
+        valor_estimado = request.form.get('valor_estimado', 0)
+        data_proximo_contato = request.form.get('data_proximo_contato')
+
+        update_data = {
+            'status': status,
+            'prioridade': prioridade,
+            'valor_estimado': float(valor_estimado) if valor_estimado else 0,
+            'data_ultima_interacao': datetime.now(brt).strftime('%d/%m/%Y %H:%M:%S')
+        }
+
+        if data_proximo_contato:
+            update_data['data_proximo_contato'] = data_proximo_contato
+
+        collect_leads.update_one(
+            {'_id': ObjectId(lead_id)},
+            {'$set': update_data}
+        )
+
+        # Adicionar anotação automática
+        adicionar_anotacao(
+            lead_id,
+            f'Status atualizado para: {status}',
+            session.get('usuario')
+        )
+
+        print(f'✅ Lead {lead_id} atualizado')
+        return redirect(url_for('visualizar_lead', lead_id=lead_id))
+
+    except Exception as e:
+        return f"Erro: {str(e)}", 500
+
+@app.route('/painel/lead/<lead_id>/anotacao', methods=['POST'])
+def adicionar_anotacao_lead(lead_id):
+    """Adicionar nota ao histórico"""
+    if not session.get('logado'):
+        return redirect(url_for('login'))
+
+    try:
+        texto = request.form.get('anotacao')
+
+        if not texto:
+            return "Anotação vazia", 400
+
+        adicionar_anotacao(lead_id, texto, session.get('usuario'))
+
+        print(f'✅ Anotação adicionada ao lead {lead_id}')
+        return redirect(url_for('visualizar_lead', lead_id=lead_id))
+
+    except Exception as e:
+        return f"Erro: {str(e)}", 500
 @app.route('/painel/deletar_lead/<lead_id>', methods=['POST'])  # ← POST!
 def deletar_lead(lead_id):
     """Deletar um lead"""

@@ -72,6 +72,35 @@ input[type="submit"]:hover{
   font-size: 2rem;
 }
 
+.user-info{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+.user-info p{
+  font-size: 1.2rem;
+  color: #555;
+}
+
+strong{
+  color: #2f2f88;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.btn-logout{
+  background: #ff4d4d;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+.btn-logout:hover{
+  background: #ff1a1a;
+}
+
 .stats{
   display: flex;
   flex-direction: row;
@@ -201,4 +230,131 @@ select{
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 16px;
+}
+/*************estilos badges***********/
+
+/* ✅ ADICIONAR AO SEU dashboard.css */
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.stat-card h3 {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.stat-number {
+    font-size: 32px;
+    font-weight: bold;
+    color: #667eea;
+}
+
+/* Badges de status */
+.badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.badge-novo { background: #e3f2fd; color: #1976d2; }
+.badge-contatado { background: #fff3e0; color: #f57c00; }
+.badge-proposta { background: #f3e5f5; color: #7b1fa2; }
+.badge-negociacao { background: #fff9c4; color: #f57f17; }
+.badge-fechado { background: #e8f5e9; color: #388e3c; }
+.badge-perdido { background: #ffebee; color: #d32f2f; }
+
+.badge-prioridade-baixa { background: #e8f5e9; color: #388e3c; }
+.badge-prioridade-media { background: #fff9c4; color: #f57f17; }
+.badge-prioridade-alta { background: #ffebee; color: #d32f2f; }
+
+/* Botões */
+.btn-view {
+    background: #2196f3;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 12px;
+    margin-right: 5px;
+}
+
+.btn-view:hover {
+    background: #1976d2;
+}
+
+/* Detalhes do lead */
+.lead-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.card h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #555;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.anotacoes-lista {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.anotacao-item {
+    padding: 15px;
+    background: #f8f9fa;
+    border-left: 4px solid #667eea;
+    margin-bottom: 15px;
+    border-radius: 6px;
+}
+
+.anotacao-item strong {
+    color: #667eea;
+}
+
+@media (max-width: 768px) {
+    .lead-details {
+        grid-template-columns: 1fr;
+    }
 }
