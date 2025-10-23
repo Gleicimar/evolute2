@@ -1,42 +1,27 @@
-import os
-import secrets
-from datetime import datetime, timezone, timedelta
-from flask import Flask, request, jsonify, render_template, redirect, url_for, session, send_from_directory
+from flask import Flask, request, jsonify, render_template, url_for, redirect, session
 from flask_cors import CORS
+from datetime import datetime, timezone, timedelta
 from config import Config
 from db.mongo import collect_leads
-from bson.objectid import ObjectId
+import secrets
 
 # Fuso horário de Brasília (UTC-3)
 brt = timezone(timedelta(hours=-3))
 
-# Caminho absoluto da pasta frontend
-frontend_folder = os.path.join(os.path.dirname(__file__), 'frontend')
+app = Flask(__name__)
 
-# Inicializa app Flask
-app = Flask(__name__, static_folder=frontend_folder, static_url_path='')
+# ✅ Configurações
 app.config.from_object(Config)
-app.secret_key = secrets.token_hex(16)
+app.secret_key = secrets.token_hex(16)  # ✅ Necessário para sessions
 
-# Configura CORS
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
-
-# ========================================
-# ROTAS FRONTEND SPA
-# ========================================
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve_index(path):
-    # Evita conflito com API e painel
-    if path.startswith('api') or path.startswith('painel') or path.startswith('dashboard'):
-        return "Not Found", 404
-    return send_from_directory(app.static_folder, 'index.html')
 
 # ========================================
 # ROTAS API
 # ========================================
-@app.route('/api', methods=['GET'])
-def api_home():
+
+@app.route('/', methods=['GET'])
+def home():
     return jsonify({
         'message': 'API EvoluteCode funcionando!',
         'version': '1.0.0',
@@ -56,7 +41,10 @@ def manage_leads():
             mensagem = data.get('mensagem')
 
             if not nome or not email:
-                return jsonify({'success': False, 'error': 'Nome e email são obrigatórios'}), 400
+                return jsonify({
+                    'success': False,
+                    'error': 'Nome e email são obrigatórios'
+                }), 400
 
             lead = {
                 'nome': nome,
@@ -70,86 +58,147 @@ def manage_leads():
             lead['_id'] = str(result.inserted_id)
 
             print(f'✅ Lead salvo: {nome} - {email}')
-            return jsonify({'success': True, 'message': 'Lead adicionado com sucesso!', 'lead': lead}), 201
+
+            return jsonify({
+                'success': True,
+                'message': 'Lead adicionado com sucesso!',
+                'lead': lead
+            }), 201
+
         except Exception as e:
             print(f'❌ Erro: {str(e)}')
-            return jsonify({'success': False, 'error': 'Erro ao processar requisição'}), 500
-    else:  # GET
+            return jsonify({
+                'success': False,
+                'error': 'Erro ao processar requisição'
+            }), 500
+
+    elif request.method == 'GET':
         try:
             all_leads = list(collect_leads.find().sort('data', -1))
             for lead in all_leads:
                 lead['_id'] = str(lead['_id'])
-            return jsonify({'success': True, 'count': len(all_leads), 'leads': all_leads}), 200
+
+            return jsonify({
+                'success': True,
+                'count': len(all_leads),
+                'leads': all_leads
+            }), 200
+
         except Exception as e:
-            return jsonify({'success': False, 'error': str(e)}), 500
+            return jsonify({
+                'success': False,
+                'error': str(e)
+            }), 500
 
 # ========================================
 # ROTAS PAINEL
 # ========================================
+
 @app.route('/painel', methods=['GET', 'POST'])
 def painel():
     if request.method == 'GET':
+        # Renderiza página de login
         return render_template('painel/login.html')
-    usuario = request.form.get('usuario')
-    senha = request.form.get('senha')
-    if not usuario or not senha:
-        return render_template('painel/login.html', error='Usuário e senha são obrigatórios')
-    if usuario == 'admin' and senha == 'admin':
-        session['usuario'] = usuario
-        session['logado'] = True
-        return redirect(url_for('dashboard'))
-    return render_template('painel/login.html', error='Usuário ou senha inválidos')
+
+    elif request.method == 'POST':
+        # ✅ Pega dados do formulário
+        usuario = request.form.get('usuario')
+        senha = request.form.get('senha')
+
+        # ✅ Validação
+        if not usuario or not senha:
+            return render_template('painel/login.html',
+                                   error='Usuário e senha são obrigatórios')
+
+        # ✅ Verificar credenciais (TROCAR por validação real depois!)
+        if usuario == 'admin' and senha == 'admin':
+            # Login bem-sucedido
+            session['usuario'] = usuario
+            session['logado'] = True
+            return redirect(url_for('dashboard'))
+        else:
+            # Credenciais inválidas
+            return render_template('painel/login.html',
+                                   error='Usuário ou senha inválidos')
 
 @app.route('/dashboard')
 def dashboard():
+    # ✅ Verificar se está logado
     if not session.get('logado'):
         return redirect(url_for('painel'))
+
     try:
+        # Buscar todos os leads
         all_leads = list(collect_leads.find().sort('data', -1))
         for lead in all_leads:
             lead['_id'] = str(lead['_id'])
-        return render_template('painel/dashboard.html', leads=all_leads, usuario=session.get('usuario'))
+
+        return render_template('painel/dashboard.html',
+                               leads=all_leads,
+                               usuario=session.get('usuario'))
     except Exception as e:
         return f"Erro ao carregar dashboard: {str(e)}", 500
-
 @app.route('/dashboard/editar_lead/<lead_id>', methods=['GET', 'POST'])
 def editar_lead(lead_id):
+    # ✅ Verificar se está logado
     if not session.get('logado'):
         return redirect(url_for('painel'))
+
+    from bson.objectid import ObjectId
+
     if request.method == 'GET':
+        # Buscar lead pelo ID
         lead = collect_leads.find_one({'_id': ObjectId(lead_id)})
         if not lead:
             return "Lead não encontrado", 404
         lead['_id'] = str(lead['_id'])
         return render_template('painel/editar_lead.html', lead=lead)
-    # POST
-    status = request.form.get('status')
-    mensagem = request.form.get('mensagem')
-    collect_leads.update_one({'_id': ObjectId(lead_id)}, {'$set': {'status': status, 'mensagem': mensagem}})
-    return redirect(url_for('dashboard'))
 
-@app.route('/dashboard/deletar_lead/<lead_id>', methods=['GET', 'POST'])
+    elif request.method == 'POST':
+        # Atualizar lead
+        status = request.form.get('status')
+        mensagem = request.form.get('mensagem')
+
+        update_data = {
+            'status': status,
+            'mensagem': mensagem
+        }
+
+        collect_leads.update_one({'_id': ObjectId(lead_id)}, {'$set': update_data})
+        return redirect(url_for('dashboard'))
+@app.route('/dashboard/deletar_lead/<lead_id>', methods=['GET',])
 def deletar_lead(lead_id):
+    # ✅ Verificar se está logado
     if not session.get('logado'):
         return redirect(url_for('painel'))
+
+    from bson.objectid import ObjectId
+
+    # Deletar lead pelo ID
     collect_leads.delete_one({'_id': ObjectId(lead_id)})
     return redirect(url_for('dashboard'))
 
+
 @app.route('/logout')
 def logout():
+    # ✅ Limpar sessão
     session.clear()
     return redirect(url_for('painel'))
 
 # ========================================
 # INICIALIZAÇÃO
 # ========================================
+
 if __name__ == '__main__':
-    print('='*70)
+    print('=' * 70)
     print('🚀 API EvoluteCode iniciando...')
     print('📍 API: http://127.0.0.1:5000')
     print('📧 Leads: http://127.0.0.1:5000/api/leads')
     print('🔐 Painel: http://127.0.0.1:5000/painel')
-    print('='*70)
-    print('👤 Credenciais de teste: admin/admin')
-    print('='*70)
-    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+    print('=' * 70)
+    print('👤 Credenciais de teste:')
+    print('   Usuário: admin')
+    print('   Senha: admin')
+    print('=' * 70)
+
+    app.run(debug=True, host='0.0.0.0', port=5000)
