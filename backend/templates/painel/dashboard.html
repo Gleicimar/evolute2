@@ -20,10 +20,15 @@
       <div class="stat-card">
         <h3>📧 Total de Leads</h3>
         <p class="stat-number">{{ leads|length }}</p>
-      </div>
+     </div>
        <div class="stat-card">
         <h3>📒 Leads Pendentes</h3>
-        <p class="stat-number">{{ leads|selectattr('status', 'equalto', 'pendente')|list|length }}</p>
+        <p class="stat-number">{{ leads|selectattr('status', 'equalto', 'novo')|list|length }}</p>
+      </div>
+        </div>
+       <div class="stat-card">
+        <h3>📒 Leads Pendentes</h3>
+        <p class="stat-number">{{ leads|selectattr('status', 'equalto', 'Pendentes')|list|length }}</p>
       </div>
     </div>
 
