@@ -19,7 +19,7 @@ CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 # --- ROTA PARA FRONTEND ---
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
-def serve_index():
+def serve_index(path):
     return send_from_directory(app.static_folder, 'index.html')
 
 # ========================================
