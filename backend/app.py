@@ -3,6 +3,7 @@ from flask_cors import CORS
 from datetime import datetime, timezone, timedelta
 from config import Config
 from db.mongo import collect_leads
+from bson.objectid import ObjectId
 import secrets
 
 # Fuso horário de Brasília (UTC-3)
@@ -10,9 +11,9 @@ brt = timezone(timedelta(hours=-3))
 
 app = Flask(__name__)
 
-# ✅ Configurações
+# Configurações
 app.config.from_object(Config)
-app.secret_key = secrets.token_hex(16)  # ✅ Necessário para sessions
+app.secret_key = secrets.token_hex(16)
 
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
@@ -94,38 +95,36 @@ def manage_leads():
 # ROTAS PAINEL
 # ========================================
 
-@app.route('/painel', methods=['GET', 'POST'])
-def painel():
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Rota de LOGIN"""
     if request.method == 'GET':
-        # Renderiza página de login
         return render_template('painel/login.html')
 
     elif request.method == 'POST':
-        # ✅ Pega dados do formulário
         usuario = request.form.get('usuario')
         senha = request.form.get('senha')
 
-        # ✅ Validação
         if not usuario or not senha:
             return render_template('painel/login.html',
                                    error='Usuário e senha são obrigatórios')
 
-        # ✅ Verificar credenciais (TROCAR por validação real depois!)
+        # Validação (trocar por validação real!)
         if usuario == 'admin' and senha == 'admin':
-            # Login bem-sucedido
             session['usuario'] = usuario
             session['logado'] = True
-            return redirect(url_for('dashboard'))
+            print(f'✅ Login bem-sucedido: {usuario}')
+            return redirect(url_for('painel'))  # ← Redireciona para dashboard
         else:
-            # Credenciais inválidas
             return render_template('painel/login.html',
                                    error='Usuário ou senha inválidos')
 
-@app.route('/dashboard')
-def dashboard():
-    # ✅ Verificar se está logado
+@app.route('/painel', methods=['GET', 'POST'])
+def painel():
+    """Rota do DASHBOARD (painel principal)"""
+    # Verificar se está logado
     if not session.get('logado'):
-        return redirect(url_for('painel'))
+        return redirect(url_for('login'))  # ← Redireciona para login
 
     try:
         # Buscar todos os leads
@@ -133,57 +132,79 @@ def dashboard():
         for lead in all_leads:
             lead['_id'] = str(lead['_id'])
 
-        return render_template('painel/dashboard.html',
+        print(f'📊 Dashboard carregado com {len(all_leads)} leads')
+
+        return render_template('painel/painel.html',
                                leads=all_leads,
                                usuario=session.get('usuario'))
     except Exception as e:
-        return f"Erro ao carregar dashboard: {str(e)}", 500
-@app.route('/dashboard/editar_lead/<lead_id>', methods=['GET', 'POST'])
-def editar_lead(lead_id):
-    # ✅ Verificar se está logado
-    if not session.get('logado'):
-        return redirect(url_for('painel'))
+        print(f'❌ Erro ao carregar painel: {str(e)}')
+        return f"Erro ao carregar painel: {str(e)}", 500
 
-    from bson.objectid import ObjectId
+@app.route('/painel/editar_lead/<lead_id>', methods=['GET', 'POST'])
+def editar_lead(lead_id):
+    """Editar um lead"""
+    if not session.get('logado'):
+        return redirect(url_for('login'))
 
     if request.method == 'GET':
         # Buscar lead pelo ID
         lead = collect_leads.find_one({'_id': ObjectId(lead_id)})
         if not lead:
             return "Lead não encontrado", 404
+
         lead['_id'] = str(lead['_id'])
         return render_template('painel/editar_lead.html', lead=lead)
 
     elif request.method == 'POST':
         # Atualizar lead
-        status = request.form.get('status')
+        nome = request.form.get('nome')
+        email = request.form.get('email')
         mensagem = request.form.get('mensagem')
+        status = request.form.get('status')
 
         update_data = {
-            'status': status,
-            'mensagem': mensagem
+            'nome': nome,
+            'email': email,
+            'mensagem': mensagem,
+            'status': status
         }
 
-        collect_leads.update_one({'_id': ObjectId(lead_id)}, {'$set': update_data})
-        return redirect(url_for('dashboard'))
-@app.route('/dashboard/deletar_lead/<lead_id>', methods=['GET',])
-def deletar_lead(lead_id):
-    # ✅ Verificar se está logado
-    if not session.get('logado'):
+        collect_leads.update_one(
+            {'_id': ObjectId(lead_id)},
+            {'$set': update_data}
+        )
+
+        print(f'✅ Lead {lead_id} atualizado')
         return redirect(url_for('painel'))
 
-    from bson.objectid import ObjectId
+@app.route('/painel/deletar_lead/<lead_id>', methods=['POST'])  # ← POST!
+def deletar_lead(lead_id):
+    """Deletar um lead"""
+    if not session.get('logado'):
+        return redirect(url_for('login'))
 
-    # Deletar lead pelo ID
-    collect_leads.delete_one({'_id': ObjectId(lead_id)})
-    return redirect(url_for('dashboard'))
+    try:
+        result = collect_leads.delete_one({'_id': ObjectId(lead_id)})
 
+        if result.deleted_count > 0:
+            print(f'✅ Lead {lead_id} deletado')
+        else:
+            print(f'⚠️ Lead {lead_id} não encontrado')
+
+        return redirect(url_for('painel'))
+
+    except Exception as e:
+        print(f'❌ Erro ao deletar: {str(e)}')
+        return f"Erro: {str(e)}", 500
 
 @app.route('/logout')
 def logout():
-    # ✅ Limpar sessão
+    """Logout do painel"""
+    usuario = session.get('usuario')
     session.clear()
-    return redirect(url_for('painel'))
+    print(f'👋 Logout: {usuario}')
+    return redirect(url_for('login'))
 
 # ========================================
 # INICIALIZAÇÃO
@@ -194,7 +215,8 @@ if __name__ == '__main__':
     print('🚀 API EvoluteCode iniciando...')
     print('📍 API: http://127.0.0.1:5000')
     print('📧 Leads: http://127.0.0.1:5000/api/leads')
-    print('🔐 Painel: http://127.0.0.1:5000/painel')
+    print('🔐 Login: http://127.0.0.1:5000/login')
+    print('📊 Painel: http://127.0.0.1:5000/painel')
     print('=' * 70)
     print('👤 Credenciais de teste:')
     print('   Usuário: admin')

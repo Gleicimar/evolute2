@@ -1,17 +1,43 @@
-  <form class="form_contato" id="contactForm" method="post">
-      <input type="text" name="nome" placeholder="Seu Nome" value="{{lead.nome}}" required>
-      <input type="email" name="email" placeholder="Seu Email" value="{{lead.email}}" required>
-      <textarea placeholder="Sua Mensagem" name="mensagem" required>{{lead.mensagem}}</textarea>
-      <select name="status" id="">
-        <option value="pendente" {% if lead.status == 'pendente' %}selected{% endif %}>Pendente</option>
-        <option value="contatado" {% if lead.status == 'contatado' %}selected{% endif %}>Contatado</option>
-        <option value="convertido" {% if lead.status == 'convertido' %}selected{% endif %}>Convertido</option>
-      </select>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="{{url_for('static', filename='css/painel.css')}}">
+</head>
+<body>
+  <section class="editar_lead">
+      <h1>Editar Lead</h1>
+      <div class="form_control">
+         <form action="" method="post">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" value="{{ lead['nome'] }}" required>
 
-      <input type="submit" class="button primary"name="atualizar" value="atualizar ">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" value="{{ lead['email'] }}" required>
 
-      <div class="form_response">
-        <p> Você receberá uma resposta em breve!</p>
+        <label for="mensagem">Mensagem:</label>
+        <textarea id="mensagem" name="mensagem" required>{{ lead['mensagem'] }}</textarea>
+
+        <label for="status">Status:</label>
+        <select id="status" name="status" required>
+          <option value="novo" {% if lead['status'] == 'novo' %}selected{% endif %}>Novo</option>
+          <option value="contatado" {% if lead['status'] == 'contatado' %}selected{% endif %}>Em Contato</option>
+          <option value="em andamento" {% if lead['status'] == 'em andamento' %}selected{% endif %}>Em Andamento</option>
+          <option value="concluído" {% if lead['status'] == 'concluído' %}selected{% endif %}>Concluído</option>
+           <option value="pendente" {% if lead['status'] == 'pendente' %}selected{% endif %}>Pendente</option>
+        </select>
+
+        <input type="submit" value="Atualizar Lead">
+      </form>
       </div>
 
-    </form>
+
+
+  </section>
+
+</body>
+</html>
+
+
