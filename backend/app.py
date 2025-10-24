@@ -324,8 +324,11 @@ def adicionar_anotacao_lead(lead_id):
         return f"Erro: {str(e)}", 500
 @app.route('/painel/deletar_lead/<lead_id>', methods=['POST'])  # ← POST!
 def deletar_lead(lead_id):
-    """Deletar um lead"""
+    """Deletar um lead - Suporta AJAX e formulário"""
     if not session.get('logado'):
+        # Se for requisição AJAX, retorna JSON
+        if request.headers.get('Content-Type') == 'application/json':
+            return jsonify({'success': False, 'message': 'Não autorizado'}), 401
         return redirect(url_for('login'))
 
     try:
@@ -333,13 +336,36 @@ def deletar_lead(lead_id):
 
         if result.deleted_count > 0:
             print(f'✅ Lead {lead_id} deletado')
+
+            # ✅ Retorna JSON se for requisição AJAX
+            if request.headers.get('Content-Type') == 'application/json' or request.is_json:
+                return jsonify({
+                    'success': True,
+                    'message': 'Lead deletado com sucesso!'
+                }), 200
+
+            # Ou redireciona se for formulário
+            return redirect(url_for('painel'))
         else:
             print(f'⚠️ Lead {lead_id} não encontrado')
 
-        return redirect(url_for('painel'))
+            if request.headers.get('Content-Type') == 'application/json' or request.is_json:
+                return jsonify({
+                    'success': False,
+                    'message': 'Lead não encontrado'
+                }), 404
+
+            return redirect(url_for('painel'))
 
     except Exception as e:
         print(f'❌ Erro ao deletar: {str(e)}')
+
+        if request.headers.get('Content-Type') == 'application/json' or request.is_json:
+            return jsonify({
+                'success': False,
+                'message': f'Erro ao deletar: {str(e)}'
+            }), 500
+
         return f"Erro: {str(e)}", 500
 
 @app.route('/logout')

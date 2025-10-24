@@ -52,6 +52,7 @@
 
     </div>
 
+<div class="tabela">
 
   <table>
     <tr>
@@ -89,19 +90,16 @@
       <td>R$ {{ "%.2f"|format(lead.valor_estimado|default(0)) }}</td>
 
       <td>{{ lead.mensagem }}</td>
-      <td>
+      <td class="icon">
         <!-- ✅ NOVO: Botão Ver Detalhes -->
-        <a href="{{ url_for('visualizar_lead', lead_id=lead._id) }}" class="btn-view">👁️ Ver</a>
-
-        <a href="{{ url_for('editar_lead', lead_id=lead._id) }}" class="btn-edit">✏️ Editar</a>
-
-       <a href="#" class="delete-link" data-lead-id="{{ lead._id }}">🗑️ Deletar</a>
+        <a href="{{ url_for('visualizar_lead', lead_id=lead._id) }}" class="btn-view">👁️ </a>
+       <a href="#" class="delete-link" data-lead-id="{{ lead._id }}">🗑️</a>
       </td>
     </tr>
     {% endfor %}
   </tbody>
   </table>
-
+</div>
     </div>
   </section>
 
