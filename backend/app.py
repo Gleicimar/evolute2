@@ -5,6 +5,7 @@ from config import Config
 from db.mongo import collect_leads
 from bson.objectid import ObjectId
 import secrets
+import os
 
 # Fuso horário de Brasília (UTC-3)
 brt = timezone(timedelta(hours=-3))
@@ -387,12 +388,12 @@ if __name__ == '__main__':
     print('📧 Leads: http://127.0.0.1:5000/api/leads')
     print('🔐 Login: http://127.0.0.1:5000/login')
     print('📊 Painel: http://127.0.0.1:5000/painel')
-    print(f'📍 Porta: {port}')
+    # print(f'📍 Porta: {port}')
     print('=' * 70)
     print('👤 Credenciais de teste:')
     print('   Usuário: admin')
     print('   Senha: admin')
     print('=' * 70)
-    port = int(os.environ.get('PORT', 5000))
+    # port = int(os.environ.get('PORT', 5000))
 
     app.run(debug=True, host='0.0.0.0', port=5000)

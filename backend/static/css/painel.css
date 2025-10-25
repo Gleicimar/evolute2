@@ -423,6 +423,7 @@ select{
     flex-direction: column;
     gap: 15px;
     text-align: center;
+    margin: 0 2%;
   }
 
   .stats{
@@ -459,8 +460,8 @@ select{
   }
 
   .lead-details{
-    grid-template-columns: 1fr;
-  }
+        display:flex;
+        flex-direction: column;
 }
 
 @media (max-width: 480px) {
