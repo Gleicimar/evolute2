@@ -1,3 +1,15 @@
+
+// Cole no seu arquivo JS
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
+});
+
+
 const MenuMobile = document.getElementById('menu_mov');
 
 MenuMobile.addEventListener('click', () => {
