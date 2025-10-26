@@ -6,6 +6,7 @@ from db.mongo import collect_leads
 from bson.objectid import ObjectId
 import secrets
 import os
+import bcrypt
 
 # Fuso horário de Brasília (UTC-3)
 brt = timezone(timedelta(hours=-3))
@@ -181,7 +182,7 @@ def painel():
         for lead in all_leads:
             lead['_id'] = str(lead['_id'])
 
-             return render_template('painel/painel.html',
+            return render_template('painel/painel.html',
                                     leads=all_leads,
                                     usuario=session.get('usuario'),
                                     stats={
