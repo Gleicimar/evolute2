@@ -91,7 +91,7 @@ def manage_leads():
                 'data_proximo_contato': data.get('data_proximo_contato', ''),
 
                 # ✅ HISTÓRICO (NOVO)
-                'anotacaoes': [{
+                'anotacoes': [{
                    'texto': 'Lead criado',
                    'data': datetime.now(brt).strftime('%d/%m/%Y %H:%M:%S'),
                    'usuario': 'sistema'
@@ -179,7 +179,7 @@ def painel():
         valor_total =sum([l.get('valor_estimado', 0) for l in all_leads if l.get('status') != 'perdidos'])
 
         for lead in all_leads:
-             lead['_id'] = str(lead['_id'])
+            lead['_id'] = str(lead['_id'])
 
              return render_template('painel/painel.html',
                                     leads=all_leads,
