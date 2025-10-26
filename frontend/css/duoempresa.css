@@ -201,7 +201,39 @@ transform: translateY(-3px);
   font-size: 6rem;
   padding: 10px;
 }
-
+.portfolio{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: rgba(10, 14, 39, 0.9);
+  padding: 30px 0;
+  place-items: center;
+}
+.portfolio h2{
+  display: flex;
+  width: 100%;
+  place-content: center;
+  font-size: 3rem;
+  margin: 20px 0;
+}
+.portfolio_grid{
+  display:flex;
+gap: 20px;
+}
+.portfolio_item{
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.portfolio_item img{
+  width: 100%;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+.portfolio_item:hover img{
+  transform: scale(1.1);
+}
 section.sobre{
   display: flex;
   width:100%;
