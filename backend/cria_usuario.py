@@ -392,3 +392,4 @@ if __name__ == '__main__':
     print('\n🔐 Testando autenticação...')
     resultado = autenticar_usuario('admin', 'Admin@123')
     print(f'Resultado: {resultado}')
+    
