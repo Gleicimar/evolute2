@@ -463,15 +463,19 @@ select{
         display:flex;
         flex-direction: column;
 }
-.portfolio{
+.portfolio> .center{
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
     gap: 20px;
+    place-items: center;
 }
-
+.portfolio_grid{
+  display:flex;
+  flex-direction: column;
+}
 
 }
 
