@@ -473,7 +473,7 @@ select{
     place-items: center;
 }
 .portfolio_grid{
-  display:flex;
+  
   flex-direction: column;
 }
 
