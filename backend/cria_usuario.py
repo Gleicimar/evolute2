@@ -381,6 +381,7 @@ def inicializar_usuarios():
         print('✅ Usuário admin já existe')
 
 
+
 if __name__ == '__main__':
     # Testa o sistema
     print('🧪 Testando sistema de autenticação...')
@@ -392,4 +393,4 @@ if __name__ == '__main__':
     print('\n🔐 Testando autenticação...')
     resultado = autenticar_usuario('admin', 'Admin@123')
     print(f'Resultado: {resultado}')
-    
+
