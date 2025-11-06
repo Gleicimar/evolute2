@@ -391,9 +391,16 @@ footer{
   }
   form{
     width: 90%;
+    place-items: center;
+  }
+  input[type="submit"]{
+    width:18rem;
+    font-size: 27px;
   }
   .portfolio_grid{
     flex-wrap: wrap;
-    place-items: center;
+    padding:2rem;
 }
+
+
  }
