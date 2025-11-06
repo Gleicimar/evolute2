@@ -23,7 +23,7 @@ body {
 }
 
  header{
-  background-color: rgba(130, 145, 243, 0.9);
+  background-image: linear-gradient(135deg, #9f9ffa 0%, #000080 100%);
   height: 140px;
   place-content: center;
  }
@@ -65,13 +65,13 @@ a.logo{
 
  .menu a:hover{
   border-bottom: antiquewhite 2px solid;
-  color:rgba(216, 220, 241, 0.9) ;
+  color:rgba(35, 50, 121, 0.9) ;
     transition: all ease-in-out 0.3s;
 
  }
 /********Banner*********************/
  .banner{
-  background:linear-gradient(135deg, #5b5bb9 0%, #000080 100%);;
+  background:linear-gradient(135deg, #5b5bb9 0%, #000080 100%);
   min-height: 80vh;
   place-items: center;
   place-content: center;
@@ -187,7 +187,7 @@ transform: translateY(-3px);
   margin-bottom: 20px;
   font-size: 2.7rem;
   width: 100%;
-  text-align: center;  
+  text-align: center;
 }
  .box_serv{
    background: rgba(26, 31, 58, 0.8);
