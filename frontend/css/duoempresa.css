@@ -19,6 +19,7 @@ body {
   max-width: 1280px;
   padding: 0 2%;
   flex-wrap: wrap;
+  place-content: center;
 }
 
  header{
@@ -120,10 +121,16 @@ a.logo{
   background-color: #00bfff;
   border: none;
   border-radius: 20px;
+  padding: 10px;
   cursor: pointer;
   margin-right: 20px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
+ }
+
+ .port{
+  font-size: 18px;
+  margin: 2rem 0;
  }
 
  .button.primary, .button.secondary:hover {
@@ -138,7 +145,7 @@ a.logo{
   height: 4.2rem;
   font-size: 33px;
   cursor: pointer;
-  width: 18rem;
+  width: 21rem;
   color: white;
   border: none;
  display: block;
@@ -229,6 +236,7 @@ gap: 20px;
 .portfolio_item img{
   width: 100%;
   height: auto;
+  margin-bottom: 1rem;
   transition: transform 0.3s ease;
 }
 .portfolio_item:hover img{
@@ -384,4 +392,8 @@ footer{
   form{
     width: 90%;
   }
+  .portfolio_grid{
+    flex-wrap: wrap;
+    place-items: center;
 }
+ }
