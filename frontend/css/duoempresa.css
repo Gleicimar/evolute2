@@ -23,7 +23,7 @@ body {
 }
 
  header{
-  background-color: rgba(10, 14, 39, 0.9);
+  background-color: rgba(130, 145, 243, 0.9);
   height: 140px;
   place-content: center;
  }
@@ -187,6 +187,7 @@ transform: translateY(-3px);
   margin-bottom: 20px;
   font-size: 2.7rem;
   width: 100%;
+  text-align: center;  
 }
  .box_serv{
    background: rgba(26, 31, 58, 0.8);
@@ -218,6 +219,7 @@ transform: translateY(-3px);
 }
 .portfolio h2{
   display: flex;
+  text-align: center;
   width: 100%;
   place-content: center;
   font-size: 3rem;
