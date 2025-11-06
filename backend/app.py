@@ -164,11 +164,12 @@ def painel():
     """Dashboard com estatísticas de follow-up"""
     if not session.get('logado'):
         return redirect(url_for('login'))
+
     try:
         # Buscar todos os leads
-        all_leads =list(collect_leads.find().sort('data', -1))
+        all_leads = list(collect_leads.find().sort('data', -1))
 
-        # ✅ CALCULAR ESTATÍSTICAS (NOVO)
+        # ✅ CALCULAR ESTATÍSTICAS
         total_leads = len(all_leads)
         novos = len([l for l in all_leads if l.get('status') == 'novo'])
         contatados = len([l for l in all_leads if l.get('status') == 'contatado'])
@@ -176,24 +177,26 @@ def painel():
         fechados = len([l for l in all_leads if l.get('status') == 'fechado'])
         perdidos = len([l for l in all_leads if l.get('status') == 'perdido'])
 
-        #Valor total estimado
-        valor_total =sum([l.get('valor_estimado', 0) for l in all_leads if l.get('status') != 'perdidos'])
+        # Valor total estimado
+        valor_total = sum([l.get('valor_estimado', 0) for l in all_leads if l.get('status') != 'perdidos'])
 
         for lead in all_leads:
             lead['_id'] = str(lead['_id'])
 
-            return render_template('painel/painel.html',
-                                    leads=all_leads,
-                                    usuario=session.get('usuario'),
-                                    stats={
-                                        'total_leads': total_leads,
-                                        'novos': novos,
-                                        'contatados': contatados,
-                                        'em_proposta': em_proposta,
-                                        'fechados': fechados,
-                                        'perdidos': perdidos,
-                                        'valor_total': valor_total
-                                    })
+        # ✅ Return fora do loop
+        return render_template('painel/painel.html',
+                               leads=all_leads,
+                               usuario=session.get('usuario'),
+                               stats={
+                                   'total_leads': total_leads,
+                                   'novos': novos,
+                                   'contatados': contatados,
+                                   'em_proposta': em_proposta,
+                                   'fechados': fechados,
+                                   'perdidos': perdidos,
+                                   'valor_total': valor_total
+                               })
+
     except Exception as e:
         print(f'❌ Erro ao carregar painel: {str(e)}')
         return f"Erro ao carregar painel: {str(e)}", 500

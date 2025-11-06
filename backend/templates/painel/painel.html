@@ -10,98 +10,117 @@
 <body>
   <section class="painel">
     <div class="center">
-    <h1>🚀 Dashboard EvoluteCode</h1>
+      <h1>🚀 Dashboard EvoluteCode</h1>
+
       <div class="user-info">
-        <p>Olá, <strong>👨‍🦱{{ usuario }}</strong>!</p>
-        <a href="{{ url_for('logout') }}" class="btn-logout" style="font-size: 2rem;"> 🚪Sair</a>
+        <p>Olá, <strong>👨‍🦱 {{ usuario }}</strong>!</p>
+        <a href="{{ url_for('logout') }}" class="btn-logout">
+          <i class="fas fa-sign-out-alt"></i>
+          Sair
+        </a>
       </div>
 
-    <div class="stats">
+      <div class="stats">
+        <div class="stat-card">
+          <h3>📊 Total de Leads</h3>
+          <p class="stat-number">{{ leads|length }}</p>
+        </div>
 
-      <div class="stat-card">
-        <h3>📊 Total de Leads</h3>
-        <p class="stat-number">{{ leads| length }}</p>
+        <div class="stat-card">
+          <h3>🆕 Novos</h3>
+          <p class="stat-number">{{ stats.novos }}</p>
+        </div>
+
+        <div class="stat-card">
+          <h3>📞 Contatados</h3>
+          <p class="stat-number">{{ stats.contatados }}</p>
+        </div>
+
+        <div class="stat-card">
+          <h3>✅ Fechados</h3>
+          <p class="stat-number">{{ stats.fechados }}</p>
+        </div>
+
+        <div class="stat-card">
+          <h3>📝 Em Proposta</h3>
+          <p class="stat-number">{{ stats.em_proposta }}</p>
+        </div>
+
+        <div class="stat-card">
+          <h3>❌ Perdidos</h3>
+          <p class="stat-number">{{ stats.perdidos }}</p>
+        </div>
+
+        <div class="stat-card">
+          <h3>💰 Valor Total</h3>
+          <p class="stat-number">R$ {{ "%.2f"|format(stats.valor_total) }}</p>
+        </div>
       </div>
 
-       <div class="stat-card">
-       <h3>🆕 Novos</h3>
-        <p class="stat-number">{{ stats.novos }}</p>
+      <div class="tabela">
+        <table>
+          <thead>
+            <tr>
+              <th>DATA</th>
+              <th>NOME</th>
+              <th>EMAIL</th>
+              <th>STATUS</th>
+              <th>PRIORIDADE</th>
+              <th>VALOR EST.</th>
+              <th>MENSAGEM</th>
+              <th>AÇÕES</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if leads %}
+              {% for lead in leads %}
+              <tr>
+                <td>{{ lead.data }}</td>
+                <td><strong>{{ lead.nome }}</strong></td>
+                <td><a href="mailto:{{ lead.email }}">{{ lead.email }}</a></td>
+                <td>
+                  <span class="badge badge-{{ lead.status|default('novo') }}">
+                    {{ lead.status|default('novo')|capitalize }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge badge-prioridade-{{ lead.prioridade|default('media') }}">
+                    {{ lead.prioridade|default('media')|capitalize }}
+                  </span>
+                </td>
+                <td><strong>R$ {{ "%.2f"|format(lead.valor_estimado|default(0)) }}</strong></td>
+                <td>{{ lead.mensagem[:50] }}{% if lead.mensagem|length > 50 %}...{% endif %}</td>
+                <td class="icon">
+                  <a href="{{ url_for('visualizar_lead', lead_id=lead._id) }}" class="btn-view" title="Visualizar">
+                    👁️
+                  </a>
+                  <a href="#" class="delete-link" data-lead-id="{{ lead._id }}" title="Excluir">
+                    🗑️
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="8">
+                  <div class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <p>Nenhum lead cadastrado ainda</p>
+                  </div>
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
       </div>
-
-      <div class="stat-card">
-         <h3>📞 Contatados</h3>
-        <p class="stat-number">{{ stats.contatados }}</p>
-      </div>
-      <div class="stat-card">
-       <h3>✅ Fechados</h3>
-        <p class="stat-number">{{ stats.fechados }}</p>
-      </div>
-      <div class="stat-card">
-        <h3>📝 Em Proposta</h3>
-        <p class="stat-number">{{ stats.em_proposta }}</p>
-     </div>
-      <div class="stat-card">
-        <h3>❌ Perdidos</h3>
-        <p class="stat-number">{{ stats.perdidos }}</p>
-      </div>
-      <div class="stat-card">
-        <h3>💰 Valor Total</h3>
-        <p class="stat-number">R$ {{ "%.2f"|format(stats.valor_total) }}</p>
-      </div>
-
-
-    </div>
-
-<div class="tabela">
-
-  <table>
-    <tr>
-      <th>Data</th>
-      <th>Nome</th>
-      <th>Email</th>
-      <th>Status</th>  <!-- ✅ NOVO -->
-      <th>Prioridade</th>  <!-- ✅ NOVO -->
-      <th>Valor Est.</th>  <!-- ✅ NOVO -->
-      <th>Mensagem</th><!-- ✅ NOVO -->
-      <th>Açoes</th>
-    </tr>
-    <tbody>
-    {% for lead in leads %}
-    <tr>
-      <td>{{ lead.data }}</td>
-      <td>{{ lead.nome }}</td>
-      <td><a href="mailto:{{ lead.email }}">{{ lead.email }}</a></td>
-
-      <!-- ✅ NOVO: Status com cor -->
-      <td>
-        <span class="badge badge-{{ lead.status|default('novo') }}">
-          {{ lead.status|default('novo')|capitalize }}
-        </span>
-      </td>
-
-      <!-- ✅ NOVO: Prioridade -->
-      <td>
-        <span class="badge badge-prioridade-{{ lead.prioridade|default('media') }}">
-          {{ lead.prioridade|default('media')|capitalize }}
-        </span>
-      </td>
-
-      <!-- ✅ NOVO: Valor estimado -->
-      <td>R$ {{ "%.2f"|format(lead.valor_estimado|default(0)) }}</td>
-
-      <td>{{ lead.mensagem }}</td>
-      <td class="icon">
-        <!-- ✅ NOVO: Botão Ver Detalhes -->
-        <a href="{{ url_for('visualizar_lead', lead_id=lead._id) }}" class="btn-view">👁️ </a>
-       <a href="#" class="delete-link" data-lead-id="{{ lead._id }}">🗑️</a>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-  </table>
-</div>
     </div>
   </section>
+
+  <!-- Dark Mode Toggle -->
+  <button class="dark-mode-toggle" onclick="toggleDarkMode()" title="Alternar tema">
+    <i class="fas fa-solid-moon" id="theme-icon"></i> 🌗
+  </button>
+
 
 
 </body>

@@ -17,3 +17,24 @@ document.querySelectorAll('.delete-link').forEach(link => {
         .catch(error => console.error(error));
     });
 });
+
+
+ // Dark Mode Toggle
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      const icon = document.getElementById('theme-icon');
+
+      if (document.body.classList.contains('dark-mode')) {
+        icon.className = 'fas fa-sun';
+        localStorage.setItem('darkMode', 'enabled');
+      } else {
+        icon.className = 'fas fa-moon';
+        localStorage.setItem('darkMode', 'disabled');
+      }
+    }
+
+    // Load saved theme
+    if (localStorage.getItem('darkMode') === 'enabled') {
+      document.body.classList.add('dark-mode');
+      document.getElementById('theme-icon').className = 'fas fa-sun';
+    }
