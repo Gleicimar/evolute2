@@ -280,7 +280,7 @@ section.sobre{
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 150px;
+  width: 200px;
   background-color: #5b5bb9;
   border: 1px solid #000080;
   margin:10px;
@@ -289,6 +289,10 @@ section.sobre{
   border-radius:20px
 }
 
+.tec_lang i{
+  font-size: 24px;
+  margin-left: 8px;
+}
 .contato h2{
   display: flex;
   width: 100%;
