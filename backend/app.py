@@ -48,7 +48,7 @@ CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 # ========================================
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('frontend/index.html')
  
 @app.route('/response', methods=['GET'])
 def responsehome():
