@@ -46,9 +46,12 @@ CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 # ========================================
 # ROTAS API
 # ========================================
-
-@app.route('/', methods=['GET'])
+@app.route('/')
 def home():
+    return render_template('index.html')
+ 
+@app.route('/response', methods=['GET'])
+def responsehome():
     return jsonify({
         'message': 'API EvoluteCode funcionando!',
         'version': '1.0.0',
